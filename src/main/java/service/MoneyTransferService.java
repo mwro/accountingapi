@@ -40,8 +40,8 @@ public class MoneyTransferService {
     }
 
     private void processTransfer(MoneyTransfer transfer){
-        Account accountFrom = accountService.getAccount(transfer.getAccountFromId());
-        Account accountTo = accountService.getAccount(transfer.getAccountToId());
+        Account accountFrom = accountService.getAccount(transfer.getAccountFromID());
+        Account accountTo = accountService.getAccount(transfer.getAccountToID());
 
         if (accountFrom == null || accountTo == null){
             return;

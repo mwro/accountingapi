@@ -6,23 +6,23 @@ import java.util.Date;
 public class MoneyTransfer {
 
     private Date date;
-    private int accountFromId;
-    private int accountToId;
+    private int accountFromID;
+    private int accountToID;
     private BigDecimal moneyAmount;
 
-    public MoneyTransfer(Date date, int accountFromId, int accountToId, BigDecimal moneyAmount) {
+    public MoneyTransfer(Date date, int accountFromID, int accountToID, BigDecimal moneyAmount) {
         this.date = date;
-        this.accountFromId = accountFromId;
-        this.accountToId = accountToId;
+        this.accountFromID = accountFromID;
+        this.accountToID = accountToID;
         this.moneyAmount = moneyAmount;
     }
 
-    public int getAccountFromId() {
-        return accountFromId;
+    public int getAccountFromID() {
+        return accountFromID;
     }
 
-    public int getAccountToId() {
-        return accountToId;
+    public int getAccountToID() {
+        return accountToID;
     }
 
     public BigDecimal getMoneyAmount() {
@@ -31,7 +31,7 @@ public class MoneyTransfer {
 
     @Override
     public String toString() {
-        return "From account with ID: " + accountFromId + ", to account with ID: " + accountToId
+        return "From account with ID: " + accountFromID + ", to account with ID: " + accountToID
                 + ", transfer value: " + moneyAmount + ", date: " + date + "\n";
     }
 }

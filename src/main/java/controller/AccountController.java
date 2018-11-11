@@ -28,7 +28,6 @@ public class AccountController {
             }
         });
 
-        // Gets all available book resources (ids)
         get("/accounts", (request, response) -> {
             StringBuilder accountsString = new StringBuilder();
             for (Account account : accountService.getAccounts()) {
