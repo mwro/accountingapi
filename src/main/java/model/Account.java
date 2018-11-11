@@ -1,4 +1,4 @@
-package data;
+package model;
 
 import java.math.BigDecimal;
 
@@ -15,6 +15,10 @@ public class Account {
         return balance;
     }
 
+    public String getName() {
+        return name;
+    }
+
     public void withdraw(BigDecimal amount)
     {
         balance = balance.subtract(amount);
@@ -23,5 +27,10 @@ public class Account {
     public void deposit(BigDecimal amount)
     {
         balance = balance.add(amount);
+    }
+
+    @Override
+    public String toString() {
+        return "Name: " + name + ", balance: " + balance;
     }
 }

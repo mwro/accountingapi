@@ -1,19 +1,17 @@
-package data;
+package service;
 
-import java.util.*;
+import model.Account;
+import model.MoneyTransfer;
 
-public class DataStore {
+import java.util.HashMap;
+import java.util.Map;
 
-    private int nextAccountID = 0;
+public class MoneyTransferService {
     private int nextTransferID = 0;
 
-    private Map<Integer, Account> accounts = new HashMap<>();
-    private Map<Integer, MoneyTransfer> moneyTransfers = new HashMap<>();
+    private AccountService accountService;
 
-    public void addAccount(Account account)
-    {
-        accounts.put(nextAccountID++, account);
-    }
+    private Map<Integer, MoneyTransfer> moneyTransfers = new HashMap<>();
 
     public void addTransfer(MoneyTransfer transfer)
     {
@@ -23,8 +21,8 @@ public class DataStore {
     }
 
     private void processTransfer(MoneyTransfer transfer) {
-        Account accountFrom = accounts.get(transfer.getAccountFromId());
-        Account accountTo = accounts.get(transfer.getAccountToId());
+        Account accountFrom = accountService.getAccount(transfer.getAccountFromId());
+        Account accountTo = accountService.getAccount(transfer.getAccountToId());
 
         if (accountFrom == null || accountTo == null){
             return;
