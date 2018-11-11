@@ -19,13 +19,11 @@ public class Account {
         return name;
     }
 
-    public void withdraw(BigDecimal amount)
-    {
+    public void withdraw(BigDecimal amount) {
         balance = balance.subtract(amount);
     }
 
-    public void deposit(BigDecimal amount)
-    {
+    public void deposit(BigDecimal amount) {
         balance = balance.add(amount);
     }
 

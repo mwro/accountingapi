@@ -21,8 +21,7 @@ public class MoneyTransferService {
         this.accountService = accountService;
     }
 
-    public int addTransfer(int accountFromID, int accountToId, BigDecimal moneyAmount)
-    {
+    public int addTransfer(int accountFromID, int accountToId, BigDecimal moneyAmount) {
         MoneyTransfer transfer = new MoneyTransfer(new Date(), accountFromID, accountToId, moneyAmount);
         processTransfer(transfer);
         //TODO: in case of process failure, do not put the transfer in the map
@@ -31,7 +30,7 @@ public class MoneyTransferService {
         return nextTransferID++;
     }
 
-    public Collection<MoneyTransfer> getMoneyTransfers(){
+    public Collection<MoneyTransfer> getMoneyTransfers() {
         return moneyTransfers.values();
     }
 
@@ -39,11 +38,11 @@ public class MoneyTransferService {
         return moneyTransfers.get(moneyTransferID);
     }
 
-    private void processTransfer(MoneyTransfer transfer){
+    private void processTransfer(MoneyTransfer transfer) {
         Account accountFrom = accountService.getAccount(transfer.getAccountFromID());
         Account accountTo = accountService.getAccount(transfer.getAccountToID());
 
-        if (accountFrom == null || accountTo == null){
+        if (accountFrom == null || accountTo == null) {
             return;
         }
 
