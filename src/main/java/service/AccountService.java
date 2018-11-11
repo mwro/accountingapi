@@ -2,10 +2,7 @@ package service;
 
 import model.Account;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class AccountService {
 
@@ -25,9 +22,9 @@ public class AccountService {
         return accounts.get(accountID);
     }
 
-    public List<Account> getAccounts()
+    public Collection<Account> getAccounts()
     {
-        return new ArrayList<>(accounts.values());
+        return accounts.values();
     }
 
 }

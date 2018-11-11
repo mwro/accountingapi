@@ -28,4 +28,10 @@ public class MoneyTransfer {
     public BigDecimal getMoneyAmount() {
         return moneyAmount;
     }
+
+    @Override
+    public String toString() {
+        return "From account with ID: " + accountFromId + ", to account with ID: " + accountToId
+                + ", transfer value: " + moneyAmount + ", date: " + date + "\n";
+    }
 }
