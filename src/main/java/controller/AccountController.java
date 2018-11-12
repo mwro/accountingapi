@@ -9,9 +9,9 @@ import json.JsonUtil;
 import model.Account;
 import service.AccountService;
 
-import static json.StatusResponse.*;
-import static spark.Spark.*;
+import static json.StatusResponse.Status;
 import static spark.Spark.get;
+import static spark.Spark.post;
 
 public class AccountController {
     public AccountController(AccountService accountService) {
