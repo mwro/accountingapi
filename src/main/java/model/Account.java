@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 
 public class Account {
 
+    private int ID;
+
     private final String name;
     private BigDecimal balance = BigDecimal.ZERO;
 
@@ -30,5 +32,13 @@ public class Account {
     @Override
     public String toString() {
         return "Name: " + name + ", balance: " + balance;
+    }
+
+    public int getID() {
+        return ID;
+    }
+
+    public void setID(int ID) {
+        this.ID = ID;
     }
 }

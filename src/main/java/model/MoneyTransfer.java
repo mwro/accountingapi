@@ -5,6 +5,8 @@ import java.util.Date;
 
 public class MoneyTransfer {
 
+    private int ID;
+
     private Date date;
     private int accountFromID;
     private int accountToID;
@@ -33,5 +35,13 @@ public class MoneyTransfer {
     public String toString() {
         return "From account with ID: " + accountFromID + ", to account with ID: " + accountToID
                 + ", transfer value: " + moneyAmount + ", date: " + date + "\n";
+    }
+
+    public int getID() {
+        return ID;
+    }
+
+    public void setID(int ID) {
+        this.ID = ID;
     }
 }
