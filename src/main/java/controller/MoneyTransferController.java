@@ -3,7 +3,10 @@ package controller;
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import json.DeserializationExclusionStrategy;
+import json.JsonUtil;
+import json.StatusResponse;
 import model.MoneyTransfer;
 import service.MoneyTransferService;
 
@@ -24,7 +27,8 @@ public class MoneyTransferController {
             MoneyTransfer moneyTransfer = requestGson.fromJson(request.body(), MoneyTransfer.class);
             moneyTransferService.addMoneyTransfer(moneyTransfer);
 
-            return new Gson().toJson(moneyTransfer);
+            JsonElement jsonElement = new Gson().toJsonTree(moneyTransfer);
+            return JsonUtil.getJsonWithStatusAndData(StatusResponse.Status.SUCCESS, jsonElement);
         });
 
         get("/moneytransfers/:id", (request, response) -> {
@@ -34,16 +38,17 @@ public class MoneyTransferController {
             MoneyTransfer moneyTransfer = moneyTransferService.getMoneyTransfer(id);
 
             if (moneyTransfer != null) {
-                return new Gson().toJson(moneyTransfer);
+                JsonElement jsonElement = new Gson().toJsonTree(moneyTransfer);
+                return JsonUtil.getJsonWithStatusAndData(StatusResponse.Status.SUCCESS, jsonElement);
             } else {
                 response.status(404);
-                //TODO: fail response
-                return new Gson();
+                return JsonUtil.getJsonWithStatusAndMessage(StatusResponse.Status.FAIL, "MoneyTransfer does not exist");
             }
         });
 
         get("/moneytransfers", (request, response) -> {
-            return new Gson().toJson((moneyTransferService.getMoneyTransfers()));
+            JsonElement jsonElement = new Gson().toJsonTree(moneyTransferService.getMoneyTransfers());
+            return JsonUtil.getJsonWithStatusAndData(StatusResponse.Status.SUCCESS, jsonElement);
         });
     }
 }

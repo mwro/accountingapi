@@ -3,10 +3,13 @@ package controller;
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import json.DeserializationExclusionStrategy;
+import json.JsonUtil;
 import model.Account;
 import service.AccountService;
 
+import static json.StatusResponse.*;
 import static spark.Spark.*;
 import static spark.Spark.get;
 
@@ -23,7 +26,8 @@ public class AccountController {
             Account account = requestGson.fromJson(request.body(), Account.class);
             accountService.addAccount(account);
 
-            return new Gson().toJson(account);
+            JsonElement jsonElement = new Gson().toJsonTree(account);
+            return JsonUtil.getJsonWithStatusAndData(Status.SUCCESS, jsonElement);
         });
 
         get("/accounts/:id", (request, response) -> {
@@ -33,16 +37,17 @@ public class AccountController {
             Account account = accountService.getAccount(id);
 
             if (account != null) {
-                return new Gson().toJson(account);
+                JsonElement jsonElement = new Gson().toJsonTree(account);
+                return JsonUtil.getJsonWithStatusAndData(Status.SUCCESS, jsonElement);
             } else {
                 response.status(404);
-                //TODO: fail response
-                return new Gson();
+                return JsonUtil.getJsonWithStatusAndMessage(Status.FAIL, "Account does not exist");
             }
         });
 
         get("/accounts", (request, response) -> {
-            return new Gson().toJson((accountService.getAccounts()));
+            JsonElement jsonElement = new Gson().toJsonTree(accountService.getAccounts());
+            return JsonUtil.getJsonWithStatusAndData(Status.SUCCESS, jsonElement);
         });
     }
 }
