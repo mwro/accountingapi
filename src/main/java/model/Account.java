@@ -16,25 +16,8 @@ public class Account {
 
     //override no-parameter constructor for Gson
     //to initialize balance default value
-    private Account()
-    {
+    private Account() {
         balance = BigDecimal.ZERO;
-    }
-
-    public BigDecimal getBalance() {
-        return balance;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void withdraw(BigDecimal amount) {
-        balance = balance.subtract(amount);
-    }
-
-    public void deposit(BigDecimal amount) {
-        balance = balance.add(amount);
     }
 
     public int getID() {
@@ -43,5 +26,21 @@ public class Account {
 
     public void setID(int ID) {
         this.ID = ID;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public BigDecimal getBalance() {
+        return balance;
+    }
+
+    public void withdraw(BigDecimal value) {
+        balance = balance.subtract(value);
+    }
+
+    public void deposit(BigDecimal value) {
+        balance = balance.add(value);
     }
 }

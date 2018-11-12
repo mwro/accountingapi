@@ -48,7 +48,7 @@ public class MoneyTransferService {
             return;
         }
 
-        accountFrom.withdraw(transfer.getMoneyAmount());
-        accountTo.deposit(transfer.getMoneyAmount());
+        accountFrom.withdraw(transfer.getTransferValue());
+        accountTo.deposit(transfer.getTransferValue());
     }
 }
