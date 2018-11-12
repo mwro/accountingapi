@@ -9,12 +9,9 @@ public class AccountService {
     private int nextAccountID = 0;
     private List<Account> accounts = new ArrayList<>();
 
-    public int createAccount(String name) {
-        Account account = new Account(name);
-        account.setID(nextAccountID);
+    public void addAccount(Account account) {
+        account.setID(nextAccountID++);
         accounts.add(account);
-
-        return nextAccountID++;
     }
 
     public Account getAccount(int accountID) {

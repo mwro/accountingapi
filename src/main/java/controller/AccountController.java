@@ -1,5 +1,9 @@
 package controller;
 
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import json.DeserializationExclusionStrategy;
 import model.Account;
 import service.AccountService;
 
@@ -10,30 +14,35 @@ public class AccountController {
     public AccountController(AccountService accountService) {
 
         post("/accounts", (request, response) -> {
-            String name = request.queryParams("name");
+            response.type("application/json");
 
-            int id = accountService.createAccount(name);
+            ExclusionStrategy strategy = new DeserializationExclusionStrategy();
 
-            response.status(201); // 201 Created
-            return id;
+            Gson requestGson = new GsonBuilder().addDeserializationExclusionStrategy(strategy).create();
+
+            Account account = requestGson.fromJson(request.body(), Account.class);
+            accountService.addAccount(account);
+
+            return new Gson().toJson(account);
         });
 
         get("/accounts/:id", (request, response) -> {
-            Account account = accountService.getAccount(Integer.parseInt(request.params(":id")));
+            response.type("application/json");
+
+            int id = Integer.parseInt(request.params(":id"));
+            Account account = accountService.getAccount(id);
+
             if (account != null) {
-                return account.toString();
+                return new Gson().toJson(account);
             } else {
-                response.status(404); // 404 Not found
-                return "Account not found";
+                response.status(404);
+                //TODO: fail response
+                return new Gson();
             }
         });
 
         get("/accounts", (request, response) -> {
-            StringBuilder accountsString = new StringBuilder();
-            for (Account account : accountService.getAccounts()) {
-                accountsString.append(account.toString()).append("\n");
-            }
-            return accountsString.toString();
+            return new Gson().toJson((accountService.getAccounts()));
         });
     }
 }

@@ -1,16 +1,24 @@
 package model;
 
+import json.DeserializeExclude;
+
 import java.math.BigDecimal;
 
 public class Account {
 
+    @DeserializeExclude
     private int ID;
 
-    private final String name;
-    private BigDecimal balance = BigDecimal.ZERO;
+    private String name;
 
-    public Account(String name) {
-        this.name = name;
+    @DeserializeExclude
+    private BigDecimal balance;
+
+    //override no-parameter constructor for Gson
+    //to initialize balance default value
+    private Account()
+    {
+        balance = BigDecimal.ZERO;
     }
 
     public BigDecimal getBalance() {
@@ -27,11 +35,6 @@ public class Account {
 
     public void deposit(BigDecimal amount) {
         balance = balance.add(amount);
-    }
-
-    @Override
-    public String toString() {
-        return "Name: " + name + ", balance: " + balance;
     }
 
     public int getID() {
