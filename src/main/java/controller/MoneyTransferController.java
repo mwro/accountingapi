@@ -1,10 +1,11 @@
 package controller;
 
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import json.DeserializationExclusionStrategy;
 import model.MoneyTransfer;
 import service.MoneyTransferService;
-
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
 
 import static spark.Spark.get;
 import static spark.Spark.post;
@@ -14,36 +15,35 @@ public class MoneyTransferController {
     public MoneyTransferController(MoneyTransferService moneyTransferService) {
 
         post("/moneytransfers", (request, response) -> {
+            response.type("application/json");
 
-            Integer accountFromID = Integer.parseInt(request.params(":accountfromid"));
-            Integer accountToID = Integer.parseInt(request.params(":accounttoid"));
+            ExclusionStrategy strategy = new DeserializationExclusionStrategy();
 
-            DecimalFormat decimalFormat = new DecimalFormat();
-            decimalFormat.setParseBigDecimal(true);
-            BigDecimal moneyAmount = (BigDecimal) decimalFormat.parse(request.params(":moneyamount"));
+            Gson requestGson = new GsonBuilder().addDeserializationExclusionStrategy(strategy).create();
 
-            int id = moneyTransferService.addTransfer(accountFromID, accountToID, moneyAmount);
+            MoneyTransfer moneyTransfer = requestGson.fromJson(request.body(), MoneyTransfer.class);
+            moneyTransferService.addMoneyTransfer(moneyTransfer);
 
-            response.status(201); // 201 Created
-            return id;
+            return new Gson().toJson(moneyTransfer);
         });
 
         get("/moneytransfers/:id", (request, response) -> {
-            MoneyTransfer moneyTransfer = moneyTransferService.getMoneyTransfer(Integer.parseInt(request.params(":id")));
+            response.type("application/json");
+
+            int id = Integer.parseInt(request.params(":id"));
+            MoneyTransfer moneyTransfer = moneyTransferService.getMoneyTransfer(id);
+
             if (moneyTransfer != null) {
-                return moneyTransfer.toString();
+                return new Gson().toJson(moneyTransfer);
             } else {
-                response.status(404); // 404 Not found
-                return "Money transfer not found";
+                response.status(404);
+                //TODO: fail response
+                return new Gson();
             }
         });
 
         get("/moneytransfers", (request, response) -> {
-            StringBuilder moneyTransferString = new StringBuilder();
-            for (MoneyTransfer moneyTransfer : moneyTransferService.getMoneyTransfers()) {
-                moneyTransferString.append(moneyTransfer.toString()).append("\n");
-            }
-            return moneyTransferString.toString();
+            return new Gson().toJson((moneyTransferService.getMoneyTransfers()));
         });
     }
 }

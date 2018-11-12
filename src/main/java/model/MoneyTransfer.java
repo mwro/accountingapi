@@ -1,34 +1,25 @@
 package model;
 
 
+import json.DeserializeExclude;
+
 import java.math.BigDecimal;
 import java.util.Date;
 
 public class MoneyTransfer {
 
+    @DeserializeExclude
     private int ID;
-    private Date date;
-    private int accountFromID;
-    private int accountToID;
+    private Integer accountFromID;
+    private Integer accountToID;
     private BigDecimal transferValue;
+    @DeserializeExclude
+    private Date date;
 
-    public MoneyTransfer(Date date, int accountFromID, int accountToID, BigDecimal transferValue) {
-        this.date = date;
-        this.accountFromID = accountFromID;
-        this.accountToID = accountToID;
-        this.transferValue = transferValue;
-    }
-
-    public int getAccountFromID() {
-        return accountFromID;
-    }
-
-    public int getAccountToID() {
-        return accountToID;
-    }
-
-    public BigDecimal getTransferValue() {
-        return transferValue;
+    //override no-parameter constructor for Gson
+    //to initialize date default value
+    public MoneyTransfer() {
+        date = new Date();
     }
 
     public int getID() {
@@ -39,9 +30,15 @@ public class MoneyTransfer {
         this.ID = ID;
     }
 
-    @Override
-    public String toString() {
-        return "From account with ID: " + accountFromID + ", to account with ID: " + accountToID
-                + ", transfer value: " + transferValue + ", date: " + date + "\n";
+    public Integer getAccountFromID() {
+        return accountFromID;
+    }
+
+    public Integer getAccountToID() {
+        return accountToID;
+    }
+
+    public BigDecimal getTransferValue() {
+        return transferValue;
     }
 }

@@ -3,7 +3,6 @@ package service;
 import model.Account;
 import model.MoneyTransfer;
 
-import java.math.BigDecimal;
 import java.util.*;
 
 public class MoneyTransferService {
@@ -18,14 +17,11 @@ public class MoneyTransferService {
         this.accountService = accountService;
     }
 
-    public int addTransfer(int accountFromID, int accountToId, BigDecimal moneyAmount) {
-        MoneyTransfer transfer = new MoneyTransfer(new Date(), accountFromID, accountToId, moneyAmount);
-        processTransfer(transfer);
-        //TODO: in case of process failure, do not put the transfer in the map
-        transfer.setID(nextTransferID);
-        moneyTransfers.add(transfer);
-
-        return nextTransferID++;
+    public void addMoneyTransfer(MoneyTransfer moneyTransfer) {
+        processMoneyTransfer(moneyTransfer);
+        //TODO: in case of process failure, do not put the moneyTransfer in the map
+        moneyTransfer.setID(nextTransferID++);
+        moneyTransfers.add(moneyTransfer);
     }
 
     public Collection<MoneyTransfer> getMoneyTransfers() {
@@ -40,15 +36,16 @@ public class MoneyTransferService {
         return matchingObject.orElse(null);
     }
 
-    private void processTransfer(MoneyTransfer transfer) {
-        Account accountFrom = accountService.getAccount(transfer.getAccountFromID());
-        Account accountTo = accountService.getAccount(transfer.getAccountToID());
+    private void processMoneyTransfer(MoneyTransfer moneyTransfer) {
+        Account accountFrom = accountService.getAccount(moneyTransfer.getAccountFromID());
+        Account accountTo = accountService.getAccount(moneyTransfer.getAccountToID());
 
-        if (accountFrom == null || accountTo == null) {
-            return;
+        if (accountFrom != null) {
+            accountFrom.withdraw(moneyTransfer.getTransferValue());
         }
 
-        accountFrom.withdraw(transfer.getTransferValue());
-        accountTo.deposit(transfer.getTransferValue());
+        if (accountTo != null) {
+            accountTo.deposit(moneyTransfer.getTransferValue());
+        }
     }
 }

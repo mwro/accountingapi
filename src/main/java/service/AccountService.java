@@ -14,9 +14,13 @@ public class AccountService {
         accounts.add(account);
     }
 
-    public Account getAccount(int accountID) {
+    public Account getAccount(Integer accountID) {
+        if (accountID == null) {
+            return  null;
+        }
+
         Optional<Account> optionalAccount = accounts.stream().
-                filter(a -> a.getID() == accountID).
+                filter(a -> accountID.equals(a.getID())).
                 findFirst();
 
         return optionalAccount.orElse(null);
