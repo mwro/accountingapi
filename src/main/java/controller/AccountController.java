@@ -32,8 +32,16 @@ public class AccountController {
 
         get("/accounts/:id", (request, response) -> {
             response.type("application/json");
+            int id;
 
-            int id = Integer.parseInt(request.params(":id"));
+            try {
+                id = Integer.parseInt(request.params(":id"));
+            }
+            catch (NumberFormatException e) {
+                response.status(400);
+                return JsonUtil.getJsonWithStatusAndMessage(Status.FAIL, "Error in request");
+            }
+
             Account account = accountService.getAccount(id);
 
             if (account != null) {

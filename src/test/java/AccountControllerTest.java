@@ -142,6 +142,19 @@ public class AccountControllerTest {
         HttpResponse httpResponse = testServer.execute(get);
         assertEquals(404, httpResponse.code());
         assertEquals(expectedJson, getStringFromBody(httpResponse));
+
+        String badID = "koza";
+
+        expectedJson = "{" +
+                "\"status\":\"FAIL\"," +
+                "\"message\":\"Error in request\"" +
+                "}";
+
+        //test request for bad ID
+        get = testServer.get("/accounts/" + badID, false);
+        httpResponse = testServer.execute(get);
+        assertEquals(400, httpResponse.code());
+        assertEquals(expectedJson, getStringFromBody(httpResponse));
     }
 
     @Test
@@ -176,6 +189,19 @@ public class AccountControllerTest {
         get = testServer.get("/accounts/" + ID2, false);
         httpResponse = testServer.execute(get);
         assertEquals(404, httpResponse.code());
+        assertEquals(expectedJson, getStringFromBody(httpResponse));
+
+        String badID = "koza";
+
+        expectedJson = "{" +
+                "\"status\":\"FAIL\"," +
+                "\"message\":\"Error in request\"" +
+                "}";
+
+        //test request for bad ID
+        get = testServer.get("/accounts/" + badID, false);
+        httpResponse = testServer.execute(get);
+        assertEquals(400, httpResponse.code());
         assertEquals(expectedJson, getStringFromBody(httpResponse));
     }
 
@@ -229,6 +255,19 @@ public class AccountControllerTest {
         get = testServer.get("/accounts/" + ID3, false);
         httpResponse = testServer.execute(get);
         assertEquals(404, httpResponse.code());
+        assertEquals(expectedJson, getStringFromBody(httpResponse));
+
+        String badID = "koza";
+
+        expectedJson = "{" +
+                "\"status\":\"FAIL\"," +
+                "\"message\":\"Error in request\"" +
+                "}";
+
+        //test request for bad ID
+        get = testServer.get("/accounts/" + badID, false);
+        httpResponse = testServer.execute(get);
+        assertEquals(400, httpResponse.code());
         assertEquals(expectedJson, getStringFromBody(httpResponse));
     }
 

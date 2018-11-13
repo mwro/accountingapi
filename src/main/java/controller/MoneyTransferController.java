@@ -34,7 +34,15 @@ public class MoneyTransferController {
         get("/moneytransfers/:id", (request, response) -> {
             response.type("application/json");
 
-            int id = Integer.parseInt(request.params(":id"));
+            int id;
+            try {
+                id = Integer.parseInt(request.params(":id"));
+            }
+            catch (NumberFormatException e) {
+                response.status(400);
+                return JsonUtil.getJsonWithStatusAndMessage(StatusResponse.Status.FAIL, "Error in request");
+            }
+
             MoneyTransfer moneyTransfer = moneyTransferService.getMoneyTransfer(id);
 
             if (moneyTransfer != null) {
