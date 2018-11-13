@@ -16,7 +16,7 @@ public class Account {
 
     //override no-parameter constructor for Gson
     //to initialize balance default value
-    private Account() {
+    public Account() {
         balance = BigDecimal.ZERO;
     }
 
@@ -30,6 +30,10 @@ public class Account {
 
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public BigDecimal getBalance() {
