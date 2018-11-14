@@ -17,9 +17,8 @@ public class MoneyTransferService {
         this.accountService = accountService;
     }
 
-    public void addMoneyTransfer(MoneyTransfer moneyTransfer) {
+    public void addMoneyTransfer(MoneyTransfer moneyTransfer) throws MoneyTransferServiceException {
         processMoneyTransfer(moneyTransfer);
-        //TODO: in case of process failure, do not put the moneyTransfer in the map
         moneyTransfer.setID(nextTransferID++);
         moneyTransfers.add(moneyTransfer);
     }
@@ -36,16 +35,31 @@ public class MoneyTransferService {
         return matchingObject.orElse(null);
     }
 
-    private void processMoneyTransfer(MoneyTransfer moneyTransfer) {
-        Account accountFrom = accountService.getAccount(moneyTransfer.getAccountFromID());
-        Account accountTo = accountService.getAccount(moneyTransfer.getAccountToID());
+    private void processMoneyTransfer(MoneyTransfer moneyTransfer) throws MoneyTransferServiceException {
+        Integer accountFromID = moneyTransfer.getAccountFromID();
+        if (accountFromID != null) {
+            Account accountFrom = getAccount(accountFromID);
 
-        if (accountFrom != null) {
+            if (accountFrom == null) {
+                throw new MoneyTransferServiceException("Account to withdraw money from does not exist");
+            }
+
             accountFrom.withdraw(moneyTransfer.getTransferValue());
         }
 
-        if (accountTo != null) {
+        Integer accountToID = moneyTransfer.getAccountToID();
+        if (accountToID != null) {
+            Account accountTo = getAccount(accountToID);
+
+            if (accountTo == null) {
+                throw new MoneyTransferServiceException("Account to deposit money to does not exist");
+            }
+
             accountTo.deposit(moneyTransfer.getTransferValue());
         }
+    }
+
+    private Account getAccount(Integer accountID) {
+        return accountService.getAccount(accountID);
     }
 }

@@ -6,6 +6,7 @@ import json.JsonUtil;
 import json.StatusResponse;
 import model.MoneyTransfer;
 import service.MoneyTransferService;
+import service.MoneyTransferServiceException;
 
 import static spark.Spark.get;
 import static spark.Spark.post;
@@ -31,7 +32,13 @@ public class MoneyTransferController {
                 return JsonUtil.getJsonWithStatusAndMessage(StatusResponse.Status.FAIL, "Error in request");
             }
 
-            moneyTransferService.addMoneyTransfer(moneyTransfer);
+            try {
+                moneyTransferService.addMoneyTransfer(moneyTransfer);
+            }
+            catch (MoneyTransferServiceException e) {
+                response.status(400);
+                return JsonUtil.getJsonWithStatusAndMessage(StatusResponse.Status.FAIL, e.getMessage());
+            }
 
             JsonElement jsonElement = new Gson().toJsonTree(moneyTransfer);
             return JsonUtil.getJsonWithStatusAndData(StatusResponse.Status.SUCCESS, jsonElement);

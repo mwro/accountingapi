@@ -9,6 +9,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import service.AccountService;
 import service.MoneyTransferService;
+import service.MoneyTransferServiceException;
 import spark.servlet.SparkApplication;
 
 import java.math.BigDecimal;
@@ -489,6 +490,92 @@ public class MoneyTransferControllerTest {
     }
 
     @Test
+    public void testPostMethodAndAccountFromDoesNotExist() throws Exception {
+        addAccountToService("Name1");
+        addAccountToService("Name2");
+
+        Integer testTransferToID1 = 0;
+        BigDecimal transferValue1 = BigDecimal.valueOf(2600.99);
+
+        addMoneyTransferToService(null, testTransferToID1, transferValue1);
+        Integer testTransferToID2 = 1;
+        BigDecimal transferValue2 = BigDecimal.valueOf(3430.95);
+
+        addMoneyTransferToService(null, testTransferToID2, transferValue2);
+
+        Integer fromID = 2;
+        Integer toID = 0;
+        BigDecimal transferValue = BigDecimal.valueOf(430.95);
+
+        String inputJson = "{" +
+                "\"accountFromID\":" + fromID + "," +
+                "\"accountToID\":" + toID + "," +
+                "\"transferValue\":" + transferValue +
+                "}";
+
+        int expectedID = 2;
+
+        PostMethod post = testServer.post("/moneytransfers", inputJson, false);
+        HttpResponse httpResponse = testServer.execute(post);
+        assertEquals(400, httpResponse.code());
+
+        assertEquals(2, moneyTransferService.getMoneyTransfers().size());
+
+        MoneyTransfer moneyTransfer = moneyTransferService.getMoneyTransfer(expectedID);
+        assertNull(moneyTransfer);
+
+        String expectedJson = "{" +
+                "\"status\":\"FAIL\"," +
+                "\"message\":\"Account to withdraw money from does not exist\"" +
+                "}";
+
+        assertEquals(expectedJson, getStringFromBody(httpResponse));
+    }
+
+    @Test
+    public void testPostMethodAndAccountToDoesNotExist() throws Exception {
+        addAccountToService("Name1");
+        addAccountToService("Name2");
+
+        Integer testTransferToID1 = 0;
+        BigDecimal transferValue1 = BigDecimal.valueOf(2600.99);
+
+        addMoneyTransferToService(null, testTransferToID1, transferValue1);
+        Integer testTransferToID2 = 1;
+        BigDecimal transferValue2 = BigDecimal.valueOf(3430.95);
+
+        addMoneyTransferToService(null, testTransferToID2, transferValue2);
+
+        Integer fromID = 0;
+        Integer toID = 4;
+        BigDecimal transferValue = BigDecimal.valueOf(430.95);
+
+        String inputJson = "{" +
+                "\"accountFromID\":" + fromID + "," +
+                "\"accountToID\":" + toID + "," +
+                "\"transferValue\":" + transferValue +
+                "}";
+
+        int expectedID = 2;
+
+        PostMethod post = testServer.post("/moneytransfers", inputJson, false);
+        HttpResponse httpResponse = testServer.execute(post);
+        assertEquals(400, httpResponse.code());
+
+        assertEquals(2, moneyTransferService.getMoneyTransfers().size());
+
+        MoneyTransfer moneyTransfer = moneyTransferService.getMoneyTransfer(expectedID);
+        assertNull(moneyTransfer);
+
+        String expectedJson = "{" +
+                "\"status\":\"FAIL\"," +
+                "\"message\":\"Account to deposit money to does not exist\"" +
+                "}";
+
+        assertEquals(expectedJson, getStringFromBody(httpResponse));
+    }
+
+    @Test
     public void testMultiplePostMethods() throws Exception {
         addAccountToService("Name1");
         addAccountToService("Name2");
@@ -693,7 +780,7 @@ public class MoneyTransferControllerTest {
         accountService.addAccount(account);
     }
 
-    private MoneyTransfer addMoneyTransferToService(Integer accountFromID, Integer accountToID, BigDecimal transferValue) {
+    private MoneyTransfer addMoneyTransferToService(Integer accountFromID, Integer accountToID, BigDecimal transferValue) throws MoneyTransferServiceException {
         MoneyTransfer moneyTransfer = new MoneyTransfer();
         moneyTransfer.setAccountFromID(accountFromID);
         moneyTransfer.setAccountToID(accountToID);
