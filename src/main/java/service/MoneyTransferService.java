@@ -36,6 +36,11 @@ public class MoneyTransferService {
     }
 
     private void processMoneyTransfer(MoneyTransfer moneyTransfer) throws MoneyTransferServiceException {
+        processWithdrawal(moneyTransfer);
+        processDeposit(moneyTransfer);
+    }
+
+    private void processWithdrawal(MoneyTransfer moneyTransfer) throws MoneyTransferServiceException {
         Integer accountFromID = moneyTransfer.getAccountFromID();
         if (accountFromID != null) {
             Account accountFrom = getAccount(accountFromID);
@@ -46,7 +51,9 @@ public class MoneyTransferService {
 
             accountFrom.withdraw(moneyTransfer.getTransferValue());
         }
+    }
 
+    private void processDeposit(MoneyTransfer moneyTransfer) throws MoneyTransferServiceException {
         Integer accountToID = moneyTransfer.getAccountToID();
         if (accountToID != null) {
             Account accountTo = getAccount(accountToID);
