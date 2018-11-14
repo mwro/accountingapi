@@ -1,9 +1,6 @@
 package controller;
 
-import com.google.gson.ExclusionStrategy;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
+import com.google.gson.*;
 import json.DeserializationExclusionStrategy;
 import json.JsonUtil;
 import model.Account;
@@ -23,7 +20,16 @@ public class AccountController {
 
             Gson requestGson = new GsonBuilder().addDeserializationExclusionStrategy(strategy).create();
 
-            Account account = requestGson.fromJson(request.body(), Account.class);
+            Account account;
+
+            try {
+                account = requestGson.fromJson(request.body(), Account.class);
+            }
+            catch (JsonSyntaxException e) {
+                response.status(400);
+                return JsonUtil.getJsonWithStatusAndMessage(Status.FAIL, "Error in request");
+            }
+
             accountService.addAccount(account);
 
             JsonElement jsonElement = new Gson().toJsonTree(account);

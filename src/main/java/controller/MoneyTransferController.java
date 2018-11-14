@@ -1,9 +1,6 @@
 package controller;
 
-import com.google.gson.ExclusionStrategy;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
+import com.google.gson.*;
 import json.DeserializationExclusionStrategy;
 import json.JsonUtil;
 import json.StatusResponse;
@@ -24,7 +21,16 @@ public class MoneyTransferController {
 
             Gson requestGson = new GsonBuilder().addDeserializationExclusionStrategy(strategy).create();
 
-            MoneyTransfer moneyTransfer = requestGson.fromJson(request.body(), MoneyTransfer.class);
+            MoneyTransfer moneyTransfer;
+
+            try {
+                moneyTransfer = requestGson.fromJson(request.body(), MoneyTransfer.class);
+            }
+            catch (JsonSyntaxException e) {
+                response.status(400);
+                return JsonUtil.getJsonWithStatusAndMessage(StatusResponse.Status.FAIL, "Error in request");
+            }
+
             moneyTransferService.addMoneyTransfer(moneyTransfer);
 
             JsonElement jsonElement = new Gson().toJsonTree(moneyTransfer);
