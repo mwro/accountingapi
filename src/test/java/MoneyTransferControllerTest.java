@@ -260,7 +260,7 @@ public class MoneyTransferControllerTest {
 
         Integer fromID3 = 2;
         Integer toID3 = 0;
-        BigDecimal transferValue3 = BigDecimal.valueOf(2900.95);
+        BigDecimal transferValue3 = BigDecimal.valueOf(2100.95);
         MoneyTransfer transfer3 = addMoneyTransferToService(fromID3, toID3, transferValue3);
 
         Integer ID1 = 0;
@@ -619,7 +619,7 @@ public class MoneyTransferControllerTest {
         assertEquals(expectedJson, getStringFromBody(httpResponse));
 
 
-        Integer fromID2 = 1;
+        Integer fromID2 = 0;
         Integer toID2 = 2;
         BigDecimal transferValue2 = BigDecimal.valueOf(1200.99);
 
@@ -665,7 +665,7 @@ public class MoneyTransferControllerTest {
         addAccountToService("Name2");
 
         int inputID = 22;
-        BigDecimal transferValue = BigDecimal.valueOf(1000.99);
+        BigDecimal transferValue = BigDecimal.ZERO;
 
         String inputJson = "{" +
                 "\"ID\":" + inputID + "," +
@@ -709,7 +709,7 @@ public class MoneyTransferControllerTest {
         addAccountToService("Name1");
         addAccountToService("Name2");
 
-        BigDecimal transferValue = BigDecimal.valueOf(1000.99);
+        BigDecimal transferValue = BigDecimal.ZERO;
 
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(0);
@@ -761,6 +761,35 @@ public class MoneyTransferControllerTest {
         String expectedJson = "{" +
                 "\"status\":\"FAIL\"," +
                 "\"message\":\"Error in request\"" +
+                "}";
+
+        PostMethod post = testServer.post("/moneytransfers", inputJson, false);
+        HttpResponse httpResponse = testServer.execute(post);
+        assertEquals(400, httpResponse.code());
+        assertEquals(expectedJson, getStringFromBody(httpResponse));
+
+        assertEquals(0, moneyTransferService.getMoneyTransfers().size());
+
+        MoneyTransfer moneyTransfer = moneyTransferService.getMoneyTransfer(0);
+        assertNull(moneyTransfer);
+    }
+
+    @Test
+    public void testPostMethodAndNoSufficientFunds() throws Exception {
+        addAccountToService("Name1");
+        addAccountToService("Name2");
+
+        BigDecimal transferValue = BigDecimal.valueOf(1200.99);
+
+        String inputJson = "{" +
+                "\"accountFromID\":0," +
+                "\"accountToID\":1," +
+                "\"transferValue\":" + transferValue +
+               "}";
+
+        String expectedJson = "{" +
+                "\"status\":\"FAIL\"," +
+                "\"message\":\"No sufficient funds to withdraw\"" +
                 "}";
 
         PostMethod post = testServer.post("/moneytransfers", inputJson, false);

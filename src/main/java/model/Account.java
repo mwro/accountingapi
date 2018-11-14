@@ -1,6 +1,7 @@
 package model;
 
 import json.DeserializeExclude;
+import service.MoneyTransferServiceException;
 
 import java.math.BigDecimal;
 
@@ -40,8 +41,16 @@ public class Account {
         return balance;
     }
 
-    public void withdraw(BigDecimal value) {
-        balance = balance.subtract(value);
+    public void withdraw(BigDecimal value) throws MoneyTransferServiceException {
+        BigDecimal result = balance.subtract(value);
+        if (bigDecimalLowerThanZero(result)) {
+            throw new MoneyTransferServiceException("No sufficient funds to withdraw");
+        }
+        balance = result;
+    }
+
+    private boolean bigDecimalLowerThanZero(BigDecimal result) {
+        return result.compareTo(BigDecimal.ZERO) < 0;
     }
 
     public void deposit(BigDecimal value) {
