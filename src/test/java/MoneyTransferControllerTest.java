@@ -445,6 +445,50 @@ public class MoneyTransferControllerTest {
     }
 
     @Test
+    public void testPostMethodAndBadJsonValueFormat() throws Exception {
+        addAccountToService("Name1");
+        addAccountToService("Name2");
+        addAccountToService("Name3");
+
+        Integer testTransferToID1 = 1;
+        BigDecimal transferValue1 = BigDecimal.valueOf(2600.99);
+
+        addMoneyTransferToService(null, testTransferToID1, transferValue1);
+        Integer testTransferToID2 = 2;
+        BigDecimal transferValue2 = BigDecimal.valueOf(3430.95);
+
+        addMoneyTransferToService(null, testTransferToID2, transferValue2);
+
+        Integer fromID = 2;
+        Integer toID = 0;
+        String badTransferValue = "abc";
+
+        String inputJson = "{" +
+                "\"accountFromID\":" + fromID + "," +
+                "\"accountToID\":" + toID + "," +
+                "\"transferValue\":" + badTransferValue +
+                "}";
+
+        int expectedID = 2;
+
+        PostMethod post = testServer.post("/moneytransfers", inputJson, false);
+        HttpResponse httpResponse = testServer.execute(post);
+        assertEquals(400, httpResponse.code());
+
+        assertEquals(2, moneyTransferService.getMoneyTransfers().size());
+
+        MoneyTransfer moneyTransfer = moneyTransferService.getMoneyTransfer(expectedID);
+        assertNull(moneyTransfer);
+
+        String expectedJson = "{" +
+                "\"status\":\"FAIL\"," +
+                "\"message\":\"Error in request\"" +
+                "}";
+
+        assertEquals(expectedJson, getStringFromBody(httpResponse));
+    }
+
+    @Test
     public void testMultiplePostMethods() throws Exception {
         addAccountToService("Name1");
         addAccountToService("Name2");
