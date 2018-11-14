@@ -56,7 +56,7 @@ public class MoneyTransferController {
                 return JsonUtil.getJsonWithStatusAndData(StatusResponse.Status.SUCCESS, jsonElement);
             } else {
                 response.status(404);
-                return JsonUtil.getJsonWithStatusAndMessage(StatusResponse.Status.FAIL, "MoneyTransfer does not exist");
+                return JsonUtil.getJsonWithStatusAndMessage(StatusResponse.Status.FAIL, "Money transfer does not exist");
             }
         });
 

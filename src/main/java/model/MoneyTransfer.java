@@ -34,11 +34,27 @@ public class MoneyTransfer {
         return accountFromID;
     }
 
+    public void setAccountFromID(Integer accountFromID) {
+        this.accountFromID = accountFromID;
+    }
+
     public Integer getAccountToID() {
         return accountToID;
     }
 
+    public void setAccountToID(Integer accountToID) {
+        this.accountToID = accountToID;
+    }
+
     public BigDecimal getTransferValue() {
         return transferValue;
+    }
+
+    public void setTransferValue(BigDecimal transferValue) {
+        this.transferValue = transferValue;
+    }
+
+    public Date getDate() {
+        return date;
     }
 }
