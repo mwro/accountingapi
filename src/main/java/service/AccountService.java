@@ -9,7 +9,7 @@ public class AccountService {
     private int nextAccountID = 0;
     private List<Account> accounts = new ArrayList<>();
 
-    public void addAccount(Account account) {
+    public synchronized void addAccount(Account account) {
         account.setID(nextAccountID++);
         accounts.add(account);
     }
