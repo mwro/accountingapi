@@ -24,7 +24,7 @@ public class MoneyTransferServiceConcurrencyTest {
     private BigDecimal transferValue = BigDecimal.valueOf(1000);
 
     @Before
-    public void setUp() {
+    public void setUp() throws MoneyTransferServiceException {
         accountService = new AccountService();
         moneyTransferService = new MoneyTransferService(accountService);
 
@@ -39,31 +39,23 @@ public class MoneyTransferServiceConcurrencyTest {
         MoneyTransfer moneyTransfer = new MoneyTransfer();
         moneyTransfer.setTransferValue(startingFunds);
         moneyTransfer.setAccountToID(0);
-        addMoneyTransferIgnoreException(moneyTransfer);
+        moneyTransferService.addMoneyTransfer(moneyTransfer);
 
         moneyTransfer = new MoneyTransfer();
         moneyTransfer.setTransferValue(startingFunds);
         moneyTransfer.setAccountToID(1);
-        addMoneyTransferIgnoreException(moneyTransfer);
-    }
-
-    private void addMoneyTransferIgnoreException(MoneyTransfer moneyTransfer) {
-        try {
-            moneyTransferService.addMoneyTransfer(moneyTransfer);
-        } catch (MoneyTransferServiceException e) {
-            e.printStackTrace();
-        }
+        moneyTransferService.addMoneyTransfer(moneyTransfer);
     }
 
     @Test
-    public void testAddMultipleAccountsInSingleThread() {
+    public void testAddMultipleAccountsInSingleThread() throws MoneyTransferServiceException {
         for (int i = 0; i < NUMBER_OF_RUNS; i++)
         {
             MoneyTransfer moneyTransfer = new MoneyTransfer();
             moneyTransfer.setTransferValue(transferValue);
             moneyTransfer.setAccountToID(0);
             moneyTransfer.setAccountFromID(1);
-            addMoneyTransferIgnoreException(moneyTransfer);
+            moneyTransferService.addMoneyTransfer(moneyTransfer);
         }
     }
 
