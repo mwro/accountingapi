@@ -17,7 +17,7 @@ public class MoneyTransferService {
         this.accountService = accountService;
     }
 
-    public void addMoneyTransfer(MoneyTransfer moneyTransfer) throws MoneyTransferServiceException {
+    public synchronized void addMoneyTransfer(MoneyTransfer moneyTransfer) throws MoneyTransferServiceException {
         processMoneyTransfer(moneyTransfer);
         moneyTransfer.setID(nextTransferID++);
         moneyTransfers.add(moneyTransfer);
@@ -36,34 +36,42 @@ public class MoneyTransferService {
     }
 
     private void processMoneyTransfer(MoneyTransfer moneyTransfer) throws MoneyTransferServiceException {
-        processWithdrawal(moneyTransfer);
-        processDeposit(moneyTransfer);
-    }
+        Account accountFrom = getWithdrawalAccount(moneyTransfer);
+        Account accountTo = getDepositAccount(moneyTransfer);
 
-    private void processWithdrawal(MoneyTransfer moneyTransfer) throws MoneyTransferServiceException {
-        Integer accountFromID = moneyTransfer.getAccountFromID();
-        if (accountFromID != null) {
-            Account accountFrom = getAccount(accountFromID);
-
-            if (accountFrom == null) {
-                throw new MoneyTransferServiceException("Account to withdraw money from does not exist");
-            }
-
+        if (accountFrom != null) {
             accountFrom.withdraw(moneyTransfer.getTransferValue());
         }
-    }
 
-    private void processDeposit(MoneyTransfer moneyTransfer) throws MoneyTransferServiceException {
-        Integer accountToID = moneyTransfer.getAccountToID();
-        if (accountToID != null) {
-            Account accountTo = getAccount(accountToID);
-
-            if (accountTo == null) {
-                throw new MoneyTransferServiceException("Account to deposit money to does not exist");
-            }
-
+        if (accountTo != null) {
             accountTo.deposit(moneyTransfer.getTransferValue());
         }
+    }
+
+    private Account getWithdrawalAccount(MoneyTransfer moneyTransfer) throws MoneyTransferServiceException {
+        Integer accountFromID = moneyTransfer.getAccountFromID();
+        if (accountFromID == null)
+            return null;
+
+        Account accountFrom = getAccount(accountFromID);
+
+        if (accountFrom == null) {
+            throw new MoneyTransferServiceException("Account to withdraw money from does not exist");
+        }
+        return accountFrom;
+    }
+
+    private Account getDepositAccount(MoneyTransfer moneyTransfer) throws MoneyTransferServiceException {
+        Integer accountToID = moneyTransfer.getAccountToID();
+        if (accountToID == null)
+            return null;
+
+        Account accountTo = getAccount(accountToID);
+
+        if (accountTo == null) {
+            throw new MoneyTransferServiceException("Account to deposit money to does not exist");
+        }
+        return accountTo;
     }
 
     private Account getAccount(Integer accountID) {

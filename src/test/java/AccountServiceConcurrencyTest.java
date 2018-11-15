@@ -10,7 +10,7 @@ import static org.junit.Assert.assertEquals;
 
 //ConcurrentTestRunner runs all Test methods in 4 separate threads
 @RunWith(ConcurrentTestRunner.class)
-public class AccountServiceTest {
+public class AccountServiceConcurrencyTest {
     private AccountService service;
     private static final int NUMBER_OF_RUNS = 100;
 
