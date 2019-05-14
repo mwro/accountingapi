@@ -9,18 +9,20 @@ public class StatusResponse {
         FAIL
     }
 
-    private Status status;
-    private JsonElement data;
-    private String message;
+    private final Status status;
+    private final JsonElement data;
+    private final String message;
 
-    public StatusResponse(Status status, String message) {
+    StatusResponse(Status status, String message) {
         this.status = status;
         this.message = message;
+        data = null;
     }
 
-    public StatusResponse(Status status, JsonElement data) {
+    StatusResponse(Status status, JsonElement data) {
         this.status = status;
-        this.data = data;
+        this.data = data.deepCopy();
+        message = null;
     }
 }
 
