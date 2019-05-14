@@ -10,8 +10,9 @@ public class AccountService {
     private List<Account> accounts = new ArrayList<>();
 
     public synchronized void addAccount(Account account) {
-        if (account == null)
+        if (account == null) {
             return;
+        }
 
         account.setID(nextAccountID++);
         accounts.add(account);
