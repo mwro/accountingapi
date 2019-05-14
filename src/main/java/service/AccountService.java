@@ -31,7 +31,7 @@ public class AccountService {
     }
 
     public Collection<Account> getAccounts() {
-        return accounts;
+        return Collections.unmodifiableCollection(accounts);
     }
 
 }

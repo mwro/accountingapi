@@ -24,7 +24,7 @@ public class MoneyTransferService {
     }
 
     public Collection<MoneyTransfer> getMoneyTransfers() {
-        return moneyTransfers;
+        return Collections.unmodifiableCollection(moneyTransfers);
     }
 
     public MoneyTransfer getMoneyTransfer(int moneyTransferID) {
